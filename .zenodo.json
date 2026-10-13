@@ -1,0 +1,26 @@
+{
+  "title": "Immersion-cooled 18650 cell in OpenFOAM v2606: case files, interface-coupling verification suite and result tables",
+  "upload_type": "software",
+  "description": "<p>Companion repository of the article by A. R. Lakshmipathi and V. Dhanapathy, \"Conjugate Heat Transfer Analysis of Single-Phase Immersion Cooling for an 18650 Cell at Peak Discharge: Anisotropic Interface Coupling Pitfalls and Low-Cost Cloud Execution\" (manuscript under review).</p><p>Contents: the OpenFOAM v2606 (chtMultiRegionFoam) dictionaries of the 26 full-discharge runs of the cell, the mesh and coolant-property generators, the analysis scripts, a verification suite for the coupling of an anisotropic solid with the source of two user libraries, and the result tables of all runs with the list of the numbers quoted in the article.</p><p>Case dictionaries, scripts and library source: GPL-3.0-or-later. Result tables and the list of quoted numbers: CC BY 4.0 (see LICENSE-DATA.md).</p>",
+  "creators": [
+    {
+      "name": "Lakshmipathi, Anantha Raman",
+      "affiliation": "Department of Mechanical Engineering, Rajalakshmi Institute of Technology, Chennai, Tamil Nadu, India"
+    },
+    {
+      "name": "Dhanapathy, Vishnupriya",
+      "affiliation": "HEXAIND Technologies and Services LLP, Tiruvannamalai, Tamil Nadu, India"
+    }
+  ],
+  "license": "gpl-3.0-or-later",
+  "access_right": "open",
+  "keywords": [
+    "OpenFOAM",
+    "conjugate heat transfer",
+    "immersion cooling",
+    "lithium-ion batteries",
+    "anisotropic conduction",
+    "interface coupling",
+    "code verification"
+  ]
+}
