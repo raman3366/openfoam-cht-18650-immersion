@@ -7,6 +7,8 @@ Companion repository of the article
 > Pitfalls and Low-Cost Cloud Execution" (manuscript under review; the reference will be
 > completed on publication).
 
+Archived release v1.0.0: <https://doi.org/10.5281/zenodo.23344394> (all versions: <https://doi.org/10.5281/zenodo.23344393>).
+
 The article and its Supplementary Material are the description of the model, of the
 verification problems and of every result. This repository holds what is needed to repeat
 the runs.
