@@ -1,0 +1,97 @@
+=== c4  (solver exit 0)  id=c4 from=110.8680321522 end=115.8680321522 endTime         115.8680321522; maxCo           1; maxDeltaT       0.006;     nCorrectors         4;          // one inner PISO loop per outer iteration:     nNonOrthogonalCorrectors 1;     // the outer loop already does the coupling, PIMPLE { nOuterCorrectors 1; } 
+  wall clock 212 s for 830 steps = 0.255 s/step (log ClockTime, whole seconds)
+  steps 830   t_end 115.8680322 s   dt first 110.874   max 110.874   median 0.006   last 0.00708833
+  fluidProbes 1 Uz [m/s]                   rho1 +0.976   zig-zag  26.6 %   alt/mean 6.739e-09 (max 3.049e-07)   amp 4.465e-10   BELOW FLOOR (1.0e-07)
+  fluidProbes 2 Uz [m/s]                   rho1 +0.925   zig-zag  16.9 %   alt/mean 2.429e-08 (max 4.752e-03)   amp 4.999e-08   BELOW FLOOR (1.0e-07)
+  fluidProbes 1 p_rgh [Pa]                 rho1 -0.015   zig-zag  49.3 %   alt/mean 1.890e-12 (max 1.482e-08)   amp 2.343e-04   BELOW FLOOR (1.0e-01)
+  fluidProbes 1 p_rgh    -> decay
+  RUN VERDICT: no growth; decay  (no growth phase in any of 9 series)
+  RESIDUAL, open-system basis (sink at h_ref)   +5.784791e-05 J = +0.000 % of interface energy   [acceptance: |.| <= 1 %]
+  max|U|: peak 0.0253235 m/s at step 1 (t = 110.874 s); median 0.0215729; last 0.0217196 m/s
+  LOCAL minimum fluid T - T0, from step 13                     -1.642e-02 K    FAIL  (>= -0.001 K)
+  ACCEPTANCE: FAIL on 1 line(s)
+  alternating mode, fluidProbes 1 p_rgh    decay
+=== c5  (solver exit 0)  id=c5 from=110.8680321522 end=115.8680321522 endTime         115.8680321522; maxCo           1; maxDeltaT       0.006;     nCorrectors         5;          // one inner PISO loop per outer iteration:     nNonOrthogonalCorrectors 1;     // the outer loop already does the coupling, PIMPLE { nOuterCorrectors 1; } 
+  wall clock 246 s for 830 steps = 0.296 s/step (log ClockTime, whole seconds)
+  steps 830   t_end 115.8680322 s   dt first 110.874   max 110.874   median 0.006   last 0.00708833
+  fluidProbes 1 Uz [m/s]                   rho1 +0.978   zig-zag  14.6 %   alt/mean 5.423e-09 (max 2.653e-07)   amp 4.017e-10   BELOW FLOOR (1.0e-07)
+  fluidProbes 2 Uz [m/s]                   rho1 +0.898   zig-zag   5.0 %   alt/mean 4.910e-09 (max 2.237e-04)   amp 3.712e-09   BELOW FLOOR (1.0e-07)
+  fluidProbes 1 p_rgh [Pa]                 rho1 -0.015   zig-zag  29.9 %   alt/mean 1.567e-12 (max 1.468e-08)   amp 2.322e-04   BELOW FLOOR (1.0e-01)
+  fluidProbes 1 p_rgh    -> no coherent alternating mode
+  RUN VERDICT: no growth; decay  (no growth phase in any of 9 series)
+  RESIDUAL, open-system basis (sink at h_ref)   +7.981269e-05 J = +0.001 % of interface energy   [acceptance: |.| <= 1 %]
+  max|U|: peak 0.0217196 m/s at step 830 (t = 115.868 s); median 0.0215729; last 0.0217196 m/s
+  LOCAL minimum fluid T - T0, from step 13                     -1.642e-02 K    FAIL  (>= -0.001 K)
+  ACCEPTANCE: FAIL on 1 line(s)
+  alternating mode, fluidProbes 1 p_rgh    no coherent alternating mode
+=== dt3  (solver exit 0)  id=dt3 from=110.8680321522 end=115.8680321522 endTime         115.8680321522; maxCo           1; maxDeltaT       0.003;     nCorrectors         3;          // one inner PISO loop per outer iteration:     nNonOrthogonalCorrectors 1;     // the outer loop already does the coupling, PIMPLE { nOuterCorrectors 1; } 
+  wall clock 331 s for 1670 steps = 0.198 s/step (log ClockTime, whole seconds)
+  steps 1670   t_end 115.8680322 s   dt first 110.871   max 110.871   median 0.003   last 0.00263684
+  fluidProbes 1 Uz [m/s]                   rho1 +0.992   zig-zag  14.4 %   alt/mean 1.105e-09 (max 8.672e-08)   amp 1.235e-10   BELOW FLOOR (1.0e-07)
+  fluidProbes 2 Uz [m/s]                   rho1 +0.968   zig-zag   9.9 %   alt/mean 3.171e-09 (max 7.412e-03)   amp 2.888e-08   BELOW FLOOR (1.0e-07)
+  fluidProbes 1 p_rgh [Pa]                 rho1 -0.027   zig-zag  46.9 %   alt/mean 9.592e-13 (max 2.571e-08)   amp 3.035e-04   BELOW FLOOR (1.0e-01)
+  fluidProbes 1 p_rgh    -> decay
+  RUN VERDICT: no growth; decay  (no growth phase in any of 9 series)
+  RESIDUAL, open-system basis (sink at h_ref)   -1.108123e-03 J = -0.008 % of interface energy   [acceptance: |.| <= 1 %]
+  max|U|: peak 0.0217238 m/s at step 1670 (t = 115.868 s); median 0.0215773; last 0.0217238 m/s
+  LOCAL minimum fluid T - T0, from step 13                     -1.645e-02 K    FAIL  (>= -0.001 K)
+  ACCEPTANCE: FAIL on 1 line(s)
+  alternating mode, fluidProbes 1 p_rgh    decay
+=== o3c2  (solver exit 0)  id=o3c2 from=110.8680321522 end=115.8680321522 endTime         115.8680321522; maxCo           1; maxDeltaT       0.006;     nCorrectors         2;          // one inner PISO loop per outer iteration:     nNonOrthogonalCorrectors 1;     // the outer loop already does the coupling, PIMPLE { nOuterCorrectors 3; } 
+  wall clock 439 s for 830 steps = 0.529 s/step (log ClockTime, whole seconds)
+  steps 830   t_end 115.8680322 s   dt first 110.874   max 110.874   median 0.006   last 0.00708833
+  fluidProbes 1 Uz [m/s]                   rho1 +0.999   zig-zag  15.8 %   alt/mean 1.111e-08 (max 8.090e-07)   amp 7.883e-10   BELOW FLOOR (1.0e-07)
+  fluidProbes 2 Uz [m/s]                   rho1 +0.937   zig-zag   5.5 %   alt/mean 6.043e-09 (max 5.668e-05)   amp 1.860e-09   BELOW FLOOR (1.0e-07)
+  fluidProbes 1 p_rgh [Pa]                 rho1 +0.173   zig-zag  34.6 %   alt/mean 4.886e-12 (max 1.474e-08)   amp 2.385e-04   BELOW FLOOR (1.0e-01)
+  fluidProbes 1 p_rgh    -> decay
+  RUN VERDICT: no growth; decay  (no growth phase in any of 9 series)
+  RESIDUAL, open-system basis (sink at h_ref)   +2.367882e-01 J = +1.730 % of interface energy   [acceptance: |.| <= 1 %]
+  max|U|: peak 0.0217216 m/s at step 830 (t = 115.868 s); median 0.0215132; last 0.0217216 m/s
+  LOCAL minimum fluid T - T0, from step 13                     -1.645e-02 K    FAIL  (>= -0.001 K)
+  ACCEPTANCE: FAIL on 2 line(s)
+  alternating mode, fluidProbes 1 p_rgh    decay
+=== no2  (solver exit 0)  id=no2 from=110.8680321522 end=115.8680321522 endTime         115.8680321522; maxCo           1; maxDeltaT       0.006;     nCorrectors         3;          // one inner PISO loop per outer iteration:     nNonOrthogonalCorrectors 2;     // the outer loop already does the coupling, PIMPLE { nOuterCorrectors 1; } 
+  wall clock 262 s for 840 steps = 0.312 s/step (log ClockTime, whole seconds)
+  steps 840   t_end 115.8680322 s   dt first 110.874   max 110.874   median 0.00599811   last 0.00703283
+  fluidProbes 1 Uz [m/s]                   rho1 +0.924   zig-zag  87.9 %   alt/mean 8.864e-08 (max 6.550e-07)   amp 1.175e-09   BELOW FLOOR (1.0e-07)
+  fluidProbes 2 Uz [m/s]                   rho1 -0.998   zig-zag 100.0 %   alt/mean 9.990e-01 (max 1.191e+00)   amp 9.300e-03
+  fluidProbes 1 p_rgh [Pa]                 rho1 -0.988   zig-zag 100.0 %   alt/mean 9.166e-08 (max 1.417e-07)   amp 9.121e-03   BELOW FLOOR (1.0e-01)
+  fluidProbesExtra 1 Uz [m/s]              rho1 -0.998   zig-zag 100.0 %   alt/mean 9.989e-01 (max 1.200e+00)   amp 2.587e-02
+  fluidProbesExtra 2 Uz [m/s]              rho1 -0.998   zig-zag 100.0 %   alt/mean 9.943e-01 (max 1.257e+00)   amp 9.544e-04
+  fluidProbes 1 p_rgh    -> no coherent alternating mode
+  RUN VERDICT: no growth; sustained 2-dt alternation  (no growth phase in any of 9 series)
+  RESIDUAL, open-system basis (sink at h_ref)   -1.541985e-03 J = -0.011 % of interface energy   [acceptance: |.| <= 1 %]
+  max|U|: peak 0.0402859 m/s at step 840 (t = 115.868 s); median 0.0305257; last 0.0402859 m/s
+  LOCAL minimum fluid T - T0, from step 13                     -1.654e-02 K    FAIL  (>= -0.001 K)
+  ACCEPTANCE: FAIL on 3 line(s)
+  alternating mode, fluidProbes 1 p_rgh    no coherent alternating mode
+  gain g to compare between pilots (fluidProbes 1 p_rgh, above the cell): 1 = geometric mean of -d2[n+1]/d2[n] over steps 22-30 of the ramp
+=== dt15  (solver exit 0)  id=dt15 from=110.8680321522 end=113.3680321522 endTime         113.3680321522; maxCo           1; maxDeltaT       0.0015;     nCorrectors         3;          // one inner PISO loop per outer iteration:     nNonOrthogonalCorrectors 1;     // the outer loop already does the coupling, PIMPLE { nOuterCorrectors 1; } 
+  wall clock 308 s for 1665 steps = 0.185 s/step (log ClockTime, whole seconds)
+  steps 1665   t_end 113.3680322 s   dt first 110.87   max 110.87   median 0.0015   last 0.00173448
+  fluidProbes 1 Uz [m/s]                   rho1 +0.995   zig-zag   6.4 %   alt/mean 3.322e-10 (max 8.684e-08)   amp 7.427e-11   BELOW FLOOR (1.0e-07)
+  fluidProbes 2 Uz [m/s]                   rho1 +0.900   zig-zag   2.5 %   alt/mean 5.060e-10 (max 1.205e-03)   amp 3.903e-09   BELOW FLOOR (1.0e-07)
+  fluidProbes 1 p_rgh [Pa]                 rho1 -0.015   zig-zag  33.9 %   alt/mean 4.053e-13 (max 5.301e-08)   amp 4.167e-04   BELOW FLOOR (1.0e-01)
+  fluidProbes 1 p_rgh    -> decay
+  RUN VERDICT: no growth; decay  (no growth phase in any of 9 series)
+  RESIDUAL, open-system basis (sink at h_ref)   -2.622065e-04 J = -0.004 % of interface energy   [acceptance: |.| <= 1 %]
+  max|U|: peak 0.0215779 m/s at step 1665 (t = 113.368 s); median 0.0215051; last 0.0215779 m/s
+  LOCAL minimum fluid T - T0, from step 13                     -1.646e-02 K    FAIL  (>= -0.001 K)
+  ACCEPTANCE: FAIL on 1 line(s)
+  alternating mode, fluidProbes 1 p_rgh    decay
+=== ref  (solver exit 0)  id=ref from=110.8680321522 end=115.8680321522 endTime         115.8680321522; maxCo           1; maxDeltaT       0.006;     nCorrectors         3;          // one inner PISO loop per outer iteration:     nNonOrthogonalCorrectors 1;     // the outer loop already does the coupling, PIMPLE { nOuterCorrectors 1; } 
+  wall clock 234 s for 841 steps = 0.278 s/step (log ClockTime, whole seconds)
+  steps 841   t_end 115.8680322 s   dt first 110.874   max 110.874   median 0.00599838   last 0.00684889
+  fluidProbes 1 Uz [m/s]                   rho1 +0.820   zig-zag  90.8 %   alt/mean 1.184e-07 (max 2.152e-06)   amp 2.038e-09   BELOW FLOOR (1.0e-07)
+  fluidProbes 2 Uz [m/s]                   rho1 -0.998   zig-zag 100.0 %   alt/mean 1.001e+00 (max 1.269e+00)   amp 9.261e-03
+  fluidProbes 1 p_rgh [Pa]                 rho1 -0.940   zig-zag 100.0 %   alt/mean 4.391e-08 (max 1.877e-07)   amp 4.540e-03   BELOW FLOOR (1.0e-01)
+  fluidProbesExtra 1 Uz [m/s]              rho1 -0.998   zig-zag 100.0 %   alt/mean 1.001e+00 (max 1.279e+00)   amp 2.676e-02
+  fluidProbesExtra 2 Uz [m/s]              rho1 -0.998   zig-zag 100.0 %   alt/mean 1.000e+00 (max 1.358e+00)   amp 9.866e-04
+  fluidProbes 1 p_rgh    -> no coherent alternating mode
+  RUN VERDICT: no growth; sustained 2-dt alternation  (no growth phase in any of 9 series)
+  RESIDUAL, open-system basis (sink at h_ref)   -1.552513e-03 J = -0.011 % of interface energy   [acceptance: |.| <= 1 %]
+  max|U|: peak 0.0454321 m/s at step 420 (t = 113.368 s); median 0.0325201; last 0.0417685 m/s
+  LOCAL minimum fluid T - T0, from step 13                     -1.652e-02 K    FAIL  (>= -0.001 K)
+  ACCEPTANCE: FAIL on 3 line(s)
+  alternating mode, fluidProbes 1 p_rgh    no coherent alternating mode
+  gain g to compare between pilots (fluidProbes 1 p_rgh, above the cell): 1 = geometric mean of -d2[n+1]/d2[n] over steps 22-30 of the ramp

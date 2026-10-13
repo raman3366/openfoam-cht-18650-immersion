@@ -1,0 +1,54 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system"; object topoSetDict; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Split the single blockMesh into the two regions splitMeshRegions needs.
+// The O-grid columns S0/S1/S2 in the middle z-layer are exactly the cell, so a
+// cylinder selector lands on block boundaries -- the radius below sits between
+// the outermost jellyroll cell centre (r = 8.87 mm) and the first fluid cell
+// centre (r = 9.10 mm), so the split is unambiguous.
+
+actions
+(
+    {
+        name    battery;
+        type    cellSet;
+        action  new;
+        source  cylinderToCell;
+        point1  (0 0 0.0325);
+        point2  (0 0 0.0975);
+        radius  0.00903;
+    }
+    {
+        name    fluid;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        box     (-1 -1 -1) (1 1 1);     // everything
+    }
+    {
+        name    fluid;
+        type    cellSet;
+        action  subtract;
+        source  cylinderToCell;
+        point1  (0 0 0.0325);
+        point2  (0 0 0.0975);
+        radius  0.00903;
+    }
+    {
+        name    battery;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     battery;
+    }
+    {
+        name    fluid;
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     fluid;
+    }
+);
+
+// ************************************************************************* //

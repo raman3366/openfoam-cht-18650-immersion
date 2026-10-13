@@ -1,0 +1,21 @@
+# build products
+benchmarks/interface/suite/lib/coNormalCoupling/lib/
+benchmarks/interface/derivation/coNormalInterface/lib/
+lnInclude/
+Make/linux*
+Make/darwin*
+__pycache__/
+*.pyc
+# run products of the cases
+cases/*/0/
+cases/*/[1-9]*/
+cases/*/processor*/
+cases/*/postProcessing/
+cases/*/log.*
+cases/*/constant/polyMesh/
+cases/*/constant/*/polyMesh/
+cases/*/constant/cellToRegion
+cases/*/dynamicCode/
+# run products of the verification suite
+benchmarks/interface/suite/scripts/smoke/
+benchmarks/interface/suite/cases/

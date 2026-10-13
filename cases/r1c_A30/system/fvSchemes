@@ -1,0 +1,11 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system"; object fvSchemes; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// Placeholder -- the real schemes live in system/fluid and system/battery.
+ddtSchemes           { default steadyState; }
+gradSchemes          { default Gauss linear; }
+divSchemes           { default none; }
+laplacianSchemes     { default none; }
+interpolationSchemes { default linear; }
+snGradSchemes        { default corrected; }
+// ************************************************************************* //

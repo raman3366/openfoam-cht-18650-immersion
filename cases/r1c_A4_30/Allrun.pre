@@ -1,0 +1,32 @@
+#!/bin/sh
+cd "${0%/*}" || exit                            # run from this directory
+. "${WM_PROJECT_DIR:?run me inside 'openfoam2606'}/bin/tools/RunFunctions"
+
+# runApplication skips a step whose log exists, so old logs go first
+rm -f log.*
+
+# Mesh and region split.  system/blockMeshDict is the mesh of this run; the four
+# meshes of the article are system/blockMeshDict.{xcoarse,coarse,medium,fine},
+# written by ../../tools/make_blockMesh.py.
+runApplication blockMesh
+runApplication topoSet
+runApplication splitMeshRegions -cellZones -overwrite
+
+# expansion-port variants only: the port faces of the fluid region get their own patch
+if [ -f system/fluid/topoSetDict.port ]
+then
+    runApplication -s port topoSet -region fluid -dict system/topoSetDict.port
+    runApplication -s port createPatch -region fluid -overwrite
+fi
+
+# cell set of system/fluid/topoSetDict (no run here uses it; made because the runs made it)
+runApplication -s axis topoSet -region fluid
+
+runApplication -s fluid   checkMesh -region fluid   -constant
+runApplication -s battery checkMesh -region battery -constant
+
+# Start from 0.orig.  Old time directories must go: decomposePar would start
+# from the latest one.  Not 'rm -rf ./[0-9]*', which also matches 0.orig.
+rm -rf 0 ./processor* postProcessing
+find . -maxdepth 1 -type d -name '[0-9]*' ! -name '0.orig' -exec rm -rf {} +
+cp -r 0.orig 0

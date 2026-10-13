@@ -1,0 +1,6 @@
+coNormalFlux.C
+coNormalTemperatureCoupledMixedFvPatchScalarField.C
+anisotropicCouplingGuard.C
+coNormalWallHeatFlux.C
+
+LIB = lib/libcoNormalCoupling

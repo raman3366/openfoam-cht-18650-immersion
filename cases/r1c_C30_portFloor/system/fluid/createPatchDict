@@ -1,0 +1,20 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system/fluid"; object createPatchDict; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// createPatch -region fluid -overwrite
+// Moves the faces of faceSet expansionPortFaces from their wall patch to a new patch.  No point,
+// internal face or cell is touched; boundary faces are renumbered.
+
+pointSync false;
+
+patches
+(
+    {
+        name            expansionPort;
+        patchInfo       { type patch; }
+        constructFrom   set;
+        set             expansionPortFaces;
+    }
+);
+
+// ************************************************************************* //

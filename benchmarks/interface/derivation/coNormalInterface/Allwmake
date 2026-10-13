@@ -1,0 +1,6 @@
+#!/bin/sh
+# Build libcoNormalInterface.so into ./lib (nothing is written into the OpenFOAM installation):
+#     openfoam2606 -c ./Allwmake
+# The target is the LIB line of Make/files (relative to this folder).
+cd "${0%/*}" || exit 1
+wmake libso .

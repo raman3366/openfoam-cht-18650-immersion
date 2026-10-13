@@ -1,0 +1,30 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system/battery"; object fvOptions; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Ohmic + entropic heat release, uniform over the jellyroll.
+//
+//   Cell     : Molicel INR18650-P26A class, 2.6 Ah, 35 A max continuous (13.5C)
+//   Ohmic    : I^2.R = 35^2 x 13.5 mOhm            = 16.54 W
+//   Entropic : I.T.dU/dT = 35 x 320 x 0.15 mV/K    =  1.68 W
+//   Total    :                                       18.2 W
+//   Volume   : pi x 9^2 x 65 mm                    = 1.65407e-5 m3
+//   Source   : 18.2 / 1.65407e-5                   = 1.10032e6 W/m3
+//
+// Held constant for the discharge.  Real DCIR climbs as SOC falls, so the true
+// heat rate is below this early in the discharge and above it at the end; the
+// constant value is the discharge-average and gives the correct total energy.
+
+heatSource
+{
+    type            scalarSemiImplicitSource;
+    selectionMode   all;
+    volumeMode      specific;       // value is per m3 of the selected cells
+
+    sources
+    {
+        h           (1.10032e6 0);  // (explicit Su [W/m3], implicit Sp)
+    }
+}
+
+// ************************************************************************* //

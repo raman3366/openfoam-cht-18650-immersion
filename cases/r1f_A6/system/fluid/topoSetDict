@@ -1,0 +1,36 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; object topoSetDict; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Cell set of the two fluid columns directly above and below the cell
+// footprint.  Trial runs confined the velocity limiter of
+// constant/fluid/fvOptions to it.  No run of this repository uses the set
+// (the limiter is switched off); Allrun.pre creates it because the runs did.
+
+actions
+(
+    // the two cylindrical "shadow" columns above and below the cell -- every
+    // observed jet across all configurations lies inside them.  The z-bounds
+    // stop just short of the cell faces so the set never touches the can-side
+    // film where the heat transfer coefficient is resolved.
+    {
+        name    axisColumn;
+        type    cellSet;
+        action  new;
+        source  cylinderToCell;
+        point1  (0 0 -1);
+        point2  (0 0 0.0324);
+        radius  0.0095;
+    }
+    {
+        name    axisColumn;
+        type    cellSet;
+        action  add;
+        source  cylinderToCell;
+        point1  (0 0 0.0976);
+        point2  (0 0 1);
+        radius  0.0095;
+    }
+);
+
+// ************************************************************************* //

@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class volScalarField; location "0/battery"; object T; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 308.15;         // cell starts soaked at room temperature
+
+boundaryField
+{
+    // The jellyroll only ever touches the two symmetry planes and the fluid;
+    // this catch-all is a safety net, not a physical boundary.
+    ".*"
+    {
+        type            zeroGradient;
+    }
+
+    "symmetry.*"
+    {
+        type            symmetryPlane;
+    }
+
+    battery_to_fluid
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        Tnbr            T;
+        // directionalSolidThermo, NOT solidThermo: for an anisotropic solid the
+        // scalar kappa the BC would otherwise use is mag(kappa) = 28 W/mK --
+        // 35x the true radial value on the can surface.  That pins the
+        // interface temperature near the solid interior and MANUFACTURES
+        // energy at the wall (the fluid received 3.4x the injected energy in
+        // the first full run).  directionalSolidThermo projects the full
+        // tensor onto each face normal: 0.8 on the curved can, 28 on the ends.
+        kappaMethod     solidThermo;
+        value           uniform 308.15;
+    }
+}
+
+// ************************************************************************* //

@@ -1,0 +1,4 @@
+run,mesh,nCorr,nOuter,maxCo,maxDt,T_core,T_mean,T_can,dT_radial,T_bath,h_200,h_250,u_peak,E_gen_J,global_resid_pct,fluid_resid_pct,verdict,accept,steps,note
+coarse mesh; one corrector and the limiter,,,,,,79.19,67.38,57.24,21.95,38.68,209.2,214.7,0.1055,4850.3,3.80,,,,,
+medium mesh; one corrector and the limiter,,,,,,83.48,71.96,62.24,21.24,38.15,160.6,163.3,0.1065,4850.3,8.80,,,,,
+fine mesh; one corrector and the limiter,,,,,,79.05,67.07,56.88,22.18,37.20,204.6,200.6,0.1124,4850.3,30.20,,,,,

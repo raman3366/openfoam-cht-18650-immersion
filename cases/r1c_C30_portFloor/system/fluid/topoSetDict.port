@@ -1,0 +1,16 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system/fluid"; object topoSetDict.port; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// Expansion port: the faces of bathFloor whose CENTRE lies in the
+// square x > 0.026, y > 0.026 (side 4 mm, the corner farthest from the cell axis).  The same square on every mesh of the family; the realised area differs
+// from side^2 by the staircase of whole faces (see port.json of each case).
+//   topoSet -region fluid -dict system/topoSetDict.port     (the region is inserted in the path)
+
+actions
+(
+    { name expansionPortFaces; type faceSet; action new;    source patchToFace; patch bathFloor; }
+    { name expansionPortFaces; type faceSet; action subset; source boxToFace;
+      box (0.026000 0.026000 -0.000100) (0.031000 0.031000 0.000100); }
+);
+
+// ************************************************************************* //

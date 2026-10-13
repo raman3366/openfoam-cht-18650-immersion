@@ -1,0 +1,25 @@
+pilot,change,ended,steps,t_end,fluid_solves,p_solves,co_max_med,verdict,resid_pct,umax_peak,umax_last,min_dT_local,accept,s_per_step
+P1a,limiter off; dt capped at 0.0005 s,End,600,0.2979798902,1,2,3.89e-05,no growth; decay,-0.000,0.000156044,3.94218e-05,-3.130e-06,PASS,1.635
+P1b,limiter off; dt capped at 0.002 s,crash,117,0.2124930555,1,2,0.000224,GROWTH,+32800.918,381.259,333.902,-9.331e+01,FAIL,
+P1c,limiter off; dt capped at 0.004 s,crash,53,0.15440256,1,2,0.000431,GROWTH,+175816.381,539.791,539.791,-1.012e+02,FAIL,
+P1d,limiter off; dt capped at 0.0085 s,crash,43,0.2085981083,1,2,0.000608,GROWTH,+44397.306,369.629,369.629,-2.205e+02,FAIL,
+P2,P1d with the heat source off and constant density,crash,44,0.2170981083,1,2,0.000651,GROWTH,-936189.604,440.008,440.008,-9.880e+01,FAIL,
+P3,P1d without the momentum predictor,End,600,4.943098108,1,2,0.000112,no growth; decay,+0.001,4.65855e-05,4.65855e-05,-6.943e-08,PASS,0.257
+P4a,P1d with viscosity x 0.05,End,600,4.943098108,1,2,0.00138,no growth; decay,+0.001,0.00072787,0.00072787,-1.847e-07,PASS,0.202
+P4b,viscosity x 0.05 and dt capped at 0.17 s,crash,64,4.961262941,1,2,0.000284,GROWTH,-5.074,455.147,455.147,-9.529e+01,FAIL,
+P5a1,limiter off; nCorrectors 2; dt capped at 0.0085 s,End,254,2.002098108,1,4,3.66e-05,no growth; no coherent alternating mode,+0.001,0.0001678,9.02896e-06,-3.168e-06,PASS,0.555
+P5a2,limiter off; nCorrectors 2; dt capped at 0.05 s,End,228,9.994734115,1,4,51.7,GROWTH,-13.071,1.91017,0.570168,-1.058e-02,FAIL,0.399
+P5a3,limiter off; nCorrectors 2; dt capped at 0.2 s,End,136,20.05763553,1,4,280,GROWTH,-92.176,2.448,0.859019,-5.087e-02,FAIL,0.566
+P5a4,limiter off; nCorrectors 2; dt capped at 0.2 s; viscosity x 4,End,136,20.05763553,1,4,1.17e+03,no growth; sustained 2-dt alternation,-98.875,8.02088,4.26911,-5.580e-02,FAIL,0.485
+P5b1,limiter off; nCorrectors 3; dt capped at 0.0085 s,End,254,2.002098108,1,6,3.24e-05,no growth; no coherent alternating mode,+0.001,0.000168212,9.03373e-06,-3.168e-06,PASS,0.657
+P5b2,limiter off; nCorrectors 3; dt capped at 0.05 s,End,228,9.994734115,1,6,0.00295,no growth; decay,+0.003,0.000197089,0.000197089,-3.096e-06,PASS,0.496
+P5b3,limiter off; nCorrectors 3; dt capped at 0.2 s,End,136,20.05763553,1,6,0.205,GROWTH,-13.334,0.425224,0.181041,-3.372e-02,FAIL,0.743
+P5b4,limiter off; nCorrectors 3; dt capped at 0.2 s; viscosity x 4,End,136,20.05763553,1,6,19,GROWTH,-83.360,2.31981,1.25178,-5.073e-02,FAIL,0.574
+P5c1,"limiter off; top-level nOuterCorrectors 3, nCorrectors 1; dt capped at 0.0085 s",crash,53,0.2935981083,3,6,3.23e-05,GROWTH,+109906.755,379.816,367.197,-1.739e+02,FAIL,
+P5c2,"limiter off; top-level nOuterCorrectors 3, nCorrectors 1; dt capped at 0.05 s",crash,48,0.9947341146,3,6,2.06e-05,growth in ONE series only (not confirmed),+22687.833,464.18,464.18,-1.756e+02,FAIL,
+P5c3,"limiter off; top-level nOuterCorrectors 3, nCorrectors 1; dt capped at 0.2 s",crash,47,2.257635529,3,6,2.02e-05,,-7513.848,470.082,470.082,-1.486e+02,FAIL,
+P5c4,"limiter off; top-level nOuterCorrectors 3, nCorrectors 1; dt capped at 0.2 s; viscosity x 4",crash,28,0.09830679742,3,6,0.000104,,+313729.535,355.972,355.972,-1.244e+02,FAIL,
+P5d1,"limiter off; top-level nOuterCorrectors 3, nCorrectors 2; dt capped at 0.0085 s",End,254,2.002098108,3,12,3.35e-05,no growth; no coherent alternating mode,+0.781,0.0002568,9.09508e-06,-2.100e-06,PASS,0.827
+P5d2,"limiter off; top-level nOuterCorrectors 3, nCorrectors 2; dt capped at 0.05 s",End,228,9.994734115,3,12,0.00263,no growth; decay,+0.708,0.000255377,0.000198926,-2.820e-06,PASS,0.662
+P5d3,"limiter off; top-level nOuterCorrectors 3, nCorrectors 2; dt capped at 0.2 s",End,136,20.05763553,3,12,0.0218,no growth; no coherent alternating mode,+0.718,0.000741903,0.000741903,-3.016e-05,PASS,0.941
+P5d4,"limiter off; top-level nOuterCorrectors 3, nCorrectors 2; dt capped at 0.2 s; viscosity x 4",End,136,20.05763553,3,12,0.00582,no growth; decay,+0.735,0.00100933,0.00018811,-2.553e-05,PASS,0.676

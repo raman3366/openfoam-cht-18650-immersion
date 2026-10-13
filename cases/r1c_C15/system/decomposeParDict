@@ -1,0 +1,12 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system"; object decomposeParDict; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Number of MPI ranks: set as needed.  The dictionaries of the two regions are
+// links to this file.
+
+numberOfSubdomains  4;
+
+method              scotch;
+
+// ************************************************************************* //

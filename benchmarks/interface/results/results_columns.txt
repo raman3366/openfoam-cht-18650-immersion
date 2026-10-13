@@ -1,0 +1,61 @@
+id                               case directory name under cases/
+family                           design = point of the design matrix (same id), added = added by the benchmark job
+block                            design-matrix tag (P1-patch, P3-grid, ...) or block of blocks.py
+problem                          patch (P1), annulus (P2), slab (P3/P4), ring (P5)
+coupling                         scalar | directional | function | conormal (function object) | conormalbc (derived BC) | scalarbc
+status                           ok | aborted
+ratio                            k_high/k_low of the solid
+k_principal                      principal conductivities as given to the solid
+theta_deg                        angle of principal axis 1 from the interface normal (strips); psi for the ring
+variant                          outer conditions / annulus variant / ring data
+cells_aniso                      
+cells_iso                        
+n_normal                         cells across the anisotropic region
+dt                               time step [s]
+nsteps                           time steps run
+nouter                           coupling passes per step
+order                            solve order of the regions
+k_c                              conductivity handed to the coupling by the anisotropic side
+k_nn                             n.K.n
+ratio_predicted                  k_c/(n.K.n)
+L2_exact                         volume-weighted rms error against the exact solution
+Linf_exact                       largest cell error against the exact solution
+Linf_scheme                      largest cell error against the closed-form solution of the transmission problem the coupling enforces
+dT_scale                         temperature scale of the problem
+rate_into_iso                    heat rate into iso through the interface (iso stencil)
+rate_out_of_aniso                heat rate out of aniso through the interface (tensor stencil, normal + tangential part)
+rate_out_of_aniso_normal         normal part of the previous column
+rate_out_of_aniso_tangential     tangential part
+imbalance                        rate_into_iso - rate_out_of_aniso: energy created at the interface per unit time
+imbalance_predicted              K_nt B H (strip, stock options), (kx-ky) pi a2 (ring, stock directional), 0 (coupling with the co-normal term)
+rate_exact                       exact heat rate through the interface in the aniso->iso direction
+ratio_steady                     rate_into_iso / rate_out_of_aniso_normal (steady problems)
+energy_ratio_raw                 slab: -dE_iso/dE_aniso over the run (contains the staggering term for one pass)
+energy_ratio_destaggered         slab, one pass: ratio with the staggering term of Eq. (E2) removed
+energy_ratio_emulator            slab: same raw ratio from the Python emulator of the algorithm
+energy_drift                     slab: dE_aniso + dE_iso
+dE_aniso                         
+dE_iso                           
+staggering_term                  slab, one pass: dt C_X H (T_Y1(end) - T_Y1(0))
+err_solver_minus_emulator        slab: Linf, solver against the emulator
+err_staggering                   slab: Linf, emulator against monolithic implicit Euler
+err_euler                        slab: Linf, monolithic implicit Euler against semi-discrete
+err_space                        slab: Linf, semi-discrete against the series of the scheme problem
+err_defect                       slab: Linf, series of the scheme problem against the exact series
+stock_whf_aniso                  stock wallHeatFlux object, anisotropic side, integrated over the interface (end of run)
+stock_whf_iso                    stock wallHeatFlux object, isotropic side
+cn_whf_aniso                     coNormalWallHeatFlux object, anisotropic side
+cn_whf_iso                       coNormalWallHeatFlux object, isotropic side
+valueFraction_diff               written valueFraction of the anisotropic side minus b_nbr/(b_own + b_nbr)
+Qp_inner                         annulus: heat rate per radian at the inner wall
+Qp_out_of_aniso                  annulus: per radian, out of aniso at the interface
+Qp_into_iso                      annulus: per radian, into iso at the interface
+Qp_exact                         annulus: exact value
+a2_first_cell                    ring: cos(2 phi) coefficient of the first-solid-cell temperature
+gross_rate                       ring: integral of |q| into iso over the interface (the net rate is zero)
+steady_change                    steady problems: largest change between the last two written fields
+continuations                    steady problems: number of times the driver doubled the run
+h_solves                         number of "Solving for h" lines in the log(s)
+region_solves                    number of "Solving for solid region" lines
+cpu_s                            solver CPU time
+abort_reason                     aborted runs: first lines of the fatal message

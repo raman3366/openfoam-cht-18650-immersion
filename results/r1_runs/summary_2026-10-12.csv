@@ -1,0 +1,10 @@
+run,mesh,nCorr,nOuter,maxCo,maxDt,T_core,T_mean,T_can,dT_radial,T_bath,h_200,h_250,u_peak,E_gen_J,global_resid_pct,fluid_resid_pct,verdict,accept,steps,note
+r1c_A30,coarse,3,1,1,0.03,87.51,75.98,66.47,21.04,38.38,134.3,138.3,0.0196,4850.3,0.75,+0.005,no growth; decay,PASS,9091,"three pressure correctors, coarse mesh, full discharge"
+r1c_A15,coarse,3,1,0.5,0.015,87.52,75.99,66.48,21.04,38.38,134.3,138.3,0.0234,4850.3,0.73,-0.001,no growth; decay,PASS,17675,time-step-halved twin of r1c_A30
+r1c_A4_30,coarse,4,1,1,0.03,87.52,75.99,66.48,21.04,38.38,134.3,138.3,0.0197,4850.3,0.75,+0.002,no growth; decay,PASS,9091,r1c_A30 with one more pressure corrector: per-step convergence check
+r1c_B30,coarse,2,3,1,0.03,87.55,76.03,66.51,21.04,38.40,134.1,138.2,0.0207,4850.3,0.36,+0.965,no growth; decay,PASS,9091,"three outer passes (3 outer, 2 correctors): independent-algorithm cross-check of r1c_A30"
+r1m_A13,medium,3,1,1,0.013,87.42,76.02,66.64,20.78,38.38,133.6,137.6,0.0222,4850.3,0.69,+0.001,no growth; decay,PASS,20412,"three pressure correctors, medium mesh, full discharge (reference inputs, numerics changed)"
+r1c_A30_def,coarse,3,1,1,0.03,123.07,119.82,118.16,4.91,44.90,19.9,21.0,0.0471,4850.3,-156.94,+0.142,no growth; decay,PASS,10228,scalar option with three pressure correctors (coarse): the run with the scalar option of the interface audit
+r1c_A30_kr020,coarse,3,1,1,0.03,112.68,88.07,63.24,49.44,37.73,125.1,129.3,0.0196,4850.3,0.62,+0.002,no growth; decay,PASS,9091,conductivity as measured by Drake et al. 2014 (18650 LFP)
+r1c_A30_kr220,coarse,3,1,1,0.03,78.03,71.09,67.03,11.00,38.65,138.7,142.7,0.0165,4850.3,0.82,+0.011,no growth; decay,PASS,9091,"conductivity inside the ranges measured by Jiang et al. 2023 (NCR18650B core)"
+r1c_A30_q20,coarse,3,1,1,0.03,92.05,79.34,68.83,23.22,38.75,138.4,142.7,0.0262,5330.0,0.78,+0.015,no growth; decay,PASS,9091,"heat rate of 20 W, about the lower of the two curve-based estimates"

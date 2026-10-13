@@ -1,0 +1,64 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "constant/battery"; object thermophysicalProperties; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Homogenised 18650 jellyroll.  The wound electrode stack is transversely
+// isotropic about the cell axis: heat crosses the spiral layers ~35x more
+// slowly than it runs along them, which is why the core runs much hotter than
+// the can.  Because k_r = k_theta, the conductivity tensor is diagonal in
+// GLOBAL Cartesian axes too (the cell axis is z), so a cartesian coordinate
+// system is exact here -- no cylindrical system needed.
+//
+//   rho = 2700 kg/m3   (45 g cell / 16.54 cm3)
+//   Cp  = 1050 J/kg/K
+//   k   = (0.8  0.8  28) W/m/K   (radial, tangential, axial)
+//
+// The 0.25 mm steel can is neglected: its wall resistance is ~1.6e-5 m2K/W
+// against ~1.1e-2 m2K/W for the ester film, i.e. 0.1% of the total.
+
+thermoType
+{
+    type            heSolidThermo;
+    mixture         pureMixture;
+    transport       constAnIso;
+    thermo          hConst;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+coordinateSystem
+{
+    type            cartesian;
+    origin          (0 0 0);
+    rotation
+    {
+        type        axes;
+        e1          (1 0 0);        // cell radial
+        e3          (0 0 1);        // cell axis -> the high-conductivity direction
+    }
+}
+
+mixture
+{
+    specie
+    {
+        molWeight   50;             // formal only; solid thermo uses rho/Cp
+    }
+    thermodynamics
+    {
+        Hf          0;
+        Sf          0;
+        Cp          1050;
+    }
+    transport
+    {
+        kappa       (0.20 0.20 30.4);   // (e1 e2 e3) = (radial tangential axial)
+    }
+    equationOfState
+    {
+        rho         2700;
+    }
+}
+
+// ************************************************************************* //

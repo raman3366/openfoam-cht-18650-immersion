@@ -1,0 +1,8 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system"; object fvSolution; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// chtMultiRegionFoam reads nOuterCorrectors from THIS file only; the entry of
+// the same name in system/fluid/fvSolution is not read.  All other solver
+// settings are in system/fluid and system/battery.
+PIMPLE { nOuterCorrectors 1; }
+// ************************************************************************* //

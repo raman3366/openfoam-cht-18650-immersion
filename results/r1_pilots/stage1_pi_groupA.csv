@@ -1,0 +1,6 @@
+pilot,change,ended,steps,t_end,fluid_solves,p_solves,co_max_med,verdict,resid_pct,umax_peak,umax_last,min_dT_local,accept,s_per_step
+P0,none (one corrector and the limiter; Courant limit 3),End,253,2,1,2,2.99,GROWTH,-93.884,0.136936,0.107305,-1.054e-02,FAIL,2.348
+P0b,dpdt term off in the fluid energy equation,End,247,2,1,2,2.99,GROWTH,-93.219,0.138203,0.107017,-3.506e-03,FAIL,2.571
+P0c,"""(U|h)Final 1"" deleted: no relax() fix-up on the final pass",End,245,2,1,2,2.94,GROWTH,-95.210,0.136098,0.0897776,-9.500e-03,FAIL,2.445
+P0d,experimental ddtCorr coefficient,End,254,2,1,2,2.94,GROWTH,-90.750,0.121874,0.105938,-1.711e-02,FAIL,2.465
+P0e,"three outer passes set in the top-level dictionary",End,233,2,3,6,2.97,GROWTH,-54.148,0.126011,0.0977223,-2.016e+00,FAIL,3.760

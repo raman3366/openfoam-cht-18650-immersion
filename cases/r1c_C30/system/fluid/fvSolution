@@ -1,0 +1,82 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system/fluid"; object fvSolution; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    "rho.*"
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-08;
+        relTol          0;
+    }
+
+    // Closed incompressible domain: the pressure equation is singular up to the
+    // reference cell, so GAMG grinds if pushed to 1e-8.  1e-7 is already three
+    // orders below any pressure difference that matters at these velocities.
+    p_rgh
+    {
+        solver          GAMG;
+        tolerance       1e-07;
+        relTol          0.01;
+        smoother        GaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 256;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+    }
+
+    p_rghFinal
+    {
+        $p_rgh;
+        relTol          0;
+    }
+
+    "(U|h|e|k|epsilon)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-08;
+        relTol          0.1;
+    }
+
+    "(U|h|e|k|epsilon)Final"
+    {
+        $U;
+        relTol          0;
+    }
+}
+
+PIMPLE
+{
+    momentumPredictor   yes;
+    nCorrectors         5;          // pressure correctors per pass
+    nNonOrthogonalCorrectors 1;
+    nOuterCorrectors    3;          // NOT READ by the solver: see system/fvSolution
+
+    // The bath is sealed and completely liquid-filled, and the ester equation
+    // of state is incompressible (rho = rho(T) only), so the absolute pressure
+    // level is otherwise undetermined.  Pin it in the quiet bottom corner.
+    // Deliberately non-grid-aligned coordinates: a point on a cell face shared
+    // by two processors is "found on 2 domains" and aborts the run, and which
+    // points land on faces changes with mesh resolution (bit the coarse GCI
+    // mesh at exactly (0.0295 0.0295 0.0025)).
+    pRefPoint           (0.029317 0.028713 0.003177);
+    pRefValue           1e5;
+}
+
+relaxationFactors
+{
+    // Equation relaxation only.  chtMultiRegionFoam does not storePrevIter() on
+    // p_rgh, so a 'fields' relaxation entry for it aborts the run.
+    equations
+    {
+        "(U|h)"         0.7;    // damps the intermediate outer iterations
+        "(U|h)Final"    1;      // last outer iteration must be unrelaxed
+    }
+}
+
+// ************************************************************************* //

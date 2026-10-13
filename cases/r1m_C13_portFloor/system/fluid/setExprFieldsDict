@@ -1,0 +1,20 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system/fluid"; object setExprFieldsDict; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// setExprFields -region fluid   (after 0/ has been copied from 0.orig/)
+// Hydrostatic initial pressure for the port case: p = p0 + rho(T0) |g| (z_lid - z), so that
+// p_rgh = p - rho gh (createFluidFields.H:190, gh = g.C) is uniform and equal to the value
+// the port condition imposes (p0 + rho(T0) |g| z_lid = 101223.497314 Pa).
+//   p0 = 100000 Pa (lid level), rho(T0 = 308.15 K) = 959.38 kg/m3, |g| = 9.81 m/s2, z_lid = 0.13 m
+
+expressions
+(
+    p
+    {
+        field       p;
+        dimensions  [1 -1 -2 0 0 0 0];
+        expression  #{ 100000 + 959.38*9.81*(0.13 - pos().z()) #};
+    }
+);
+
+// ************************************************************************* //

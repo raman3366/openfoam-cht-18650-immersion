@@ -1,0 +1,442 @@
+SUPPLEMENTARY DATA FILES
+
+of the article "Conjugate Heat Transfer Analysis of Single-Phase Immersion Cooling for an
+18650 Cell at Peak Discharge: Anisotropic Interface Coupling Pitfalls and Low-Cost Cloud
+Execution" by A. R. Lakshmipathi and V. Dhanapathy.
+
+These files belong to the Supplementary Material (supplement.pdf).  They hold the result
+tables of all runs and the list of the numbers that the article and the Supplementary
+Material quote, each with its source.  Supplementary Note S11 of supplement.pdf (the run
+index) relates the identifiers used here to the names used in the article.  Section 5 of
+this file says in which table each group of runs is found and names the trial and stopped
+runs from which no result was taken.
+
+File and folder names are those of the working repository of the project, so that a path
+quoted in a table note of the Supplementary Material is also the path of the file here.
+Some file and column names differ from the working repository; section 6 lists them.  Case
+files, generators, analysis scripts and the library source are not in this folder; they are
+publicly available at https://github.com/raman3366/openfoam-cht-18650-immersion .
+
+All files are plain text: tables with comma-separated values (.csv) and text files (.txt).
+
+
+1. THE LIST OF NUMBERS
+
+numbers_quoted.csv
+    One row for every number that the article or the Supplementary Material quotes from a
+    run, a mesh, a dictionary or the cost meter.  A number quoted with different rounding in
+    different places has one row per printed form.  The list is written by a script from
+    the sources of the two documents.  Columns:
+
+    key                    identifier of the number (see "Keys" below)
+    kind_of_source         table of numbers | derived number of a text block |
+                           file and line | arithmetic
+    printed_value          the value as printed
+    source_value           the value in its source, unrounded and in the unit of the source
+                           (the printed value may be in another unit, for example ms for s,
+                           mm/s for m/s or degC for K); for "file and line" the number on
+                           the cited line that is closest to the printed value; empty for
+                           "arithmetic"
+    unit                   unit of source_value
+    definition             what the number is
+    source_file            file of the project from which the value was read (a file under
+                           runs/ is in a run directory, which is not part of this folder)
+    quoted_in              article, supplement, or both
+    fragments_and_number_of_uses
+                           the parts of the two documents that print the number, with the
+                           number of places: W1 to W7 are the parts of the article in the
+                           order of its sections, S01 to S11 the Supplementary Notes
+
+    Keys.  "topic.dataset.quantity" is an entry of the project's table of numbers.  The data
+    set is the identifier of a run (Supplementary Note S11), two identifiers joined by
+    "_minus_" for the difference between two runs, or a named data set.  The topics are:
+
+    inp     inputs, geometry, meshes and constants derived from them; published values
+            with which the inputs are compared
+    fam     the four runs with the final settings and the two twins with half the time step
+    chk     checks of the number of correctors, of the algorithm and of the time step
+    gci     grid study: ratios of successive differences, classes, observed orders
+    unc     indicator of the numerical uncertainty
+    htc     heat-transfer coefficient: definitions and their differences
+    en      energy account of each run
+    mass    coolant mass that leaves through the pressure-reference cell
+    pil     pilot runs on the coarse mesh
+    fin     fine mesh: the discharge with three correctors and its seven restart pilots
+    def     runs with the scalar option and face-by-face audit of the cell surface
+            ("def" is a working name)
+    port    runs and short tests with an opening at constant pressure
+    cp      twin with constant coolant heat capacity
+    sens    runs with one input changed
+    plate   verification of the fluid solver on a heated vertical plate; coefficients of
+            the cell runs by part of the cell surface
+    bench   verification suite
+    cost    time steps, run times, ranks, strong scaling and metered cost
+    slow    slow oscillation of the plume above the cell late in the discharge
+            (Supplementary Note S6, Part G)
+    shift   difference of the temperatures between two runs that differ in the number of
+            pressure correctors or in the time step, before and after the slow oscillation
+            sets in (Supplementary Note S6, Part G)
+    scan    two-step content of the velocity series sampled at each time step, scanned over
+            the whole run in blocks of 2 s (Supplementary Note S6, Part F)
+    body    numbers of the text of the article that belong to none of the topics above
+    lim     the three discharges with one corrector and the velocity limiter (data sets
+            limiter_coarse, limiter_medium and limiter_fine)
+
+    A key "blocks:<letter>.<name>" is a number derived for the text of the Supplementary
+    Notes (A coolant, B cell and heat source, C and M and P fixed volume, mass loss and
+    expansion port, G and I reference times and headline values, L plate, S pilots, E and V
+    single values).  A key "file:<path>:<line>" is read from that line of that file.  A key
+    "calc:<expression>" is arithmetic on the entries it names, or a constant of a
+    definition (a threshold, the limit of a time window).
+
+    The definitions are those of the project's table of numbers.  They use some working
+    names: "core" or "T_core" is the hot spot, "can" the cell surface, "fluid" the coolant,
+    "solid" or "battery" the cell, "aniso" and "iso" the anisotropic region and its
+    isotropic neighbor region, "Rule A1" the cost as a share of the occupied cores and
+    "Rule A2" the cost with idle capacity spread over the runs.  Energies and heat rates of
+    the cell model are for the whole cell and bath (the model is one quadrant) unless a
+    definition says otherwise.
+
+
+2. RESULT TABLES OF THE CELL RUNS
+
+2.1 Discharges
+
+results/r1_runs/familyC.csv
+    The four discharges with the final settings (extra-coarse, coarse, medium and fine
+    mesh) and the two twins with half the time step and half the Courant limit.
+
+results/r1_runs/summary_2026-10-12.csv
+    Nine discharges on the coarse and medium meshes that differ from the final settings in
+    the pressure-velocity step (three or four pressure correctors; three outer passes with
+    two correctors each), three of them with a changed input and one with the scalar
+    option.
+
+results/r1_runs/batch3.csv
+    Eight further discharges with the final settings: expansion port (coarse, medium),
+    constant coolant heat capacity, scalar option (coarse, medium), two other conductivity
+    pairs and the raised heat rate; the coarse and medium runs with the final settings are
+    repeated in it for comparison.
+
+results/r1_runs/remaining_discharges.csv
+    The three discharges of Supplementary Note S11 that have no row in the three tables
+    above: D12 (medium mesh, three correctors, half the time step), D13 (fine mesh, three
+    correctors, stopped at 110.9 s) and D17 (medium mesh, scalar option, three correctors).
+    This table was written for this folder from the project's table of numbers (topics chk,
+    fin, def, en and cost; the same entries are in numbers_quoted.csv where a note quotes
+    them); the settings are those recorded in the run directory, and verdict and accept
+    are the lines of the analysis script for the run.  Columns as in the tables above, with
+    these differences: t_end is the time of the last time step (s); u_peak_200 and
+    u_peak_end are the largest speed in the coolant at 200 s and at the last sample (m/s),
+    in place of u_peak; E_gen_J and global_resid_pct are not given.  For D13 no sample at
+    200 s or at 267.0 s exists; its note gives what was evaluated.
+
+results/r1_runs/one_corrector_limiter.csv
+    The three discharges with one pressure corrector and the velocity limiter that Section
+    V-C of the article quotes (coarse, medium and fine mesh).  They are no part of the 26
+    discharges of the tables above and of Supplementary Notes S10 and S11.
+
+    Columns of the run tables.  run: identifier (Supplementary Note S11); mesh ("xcoarse"
+    is the extra-coarse mesh); nCorr: pressure correctors per outer pass; nOuter: outer
+    passes; maxCo: Courant limit; maxDt: time-step cap (s); T_core, T_mean, T_can, T_bath:
+    hot spot, cell mean, cell-surface temperature and bath temperature at 267.0 s (degC);
+    dT_radial: hot spot minus T_can (K); h_200, h_250: heat-transfer coefficient by the
+    definition of the article at 200 and 250 s (W/(m2 K)); u_peak (m/s), E_gen_J (J) and
+    global_resid_pct: see below; fluid_resid_pct: balance of the coolant as a percentage of
+    the interface heat; verdict: result of the search for a two-step oscillation in the
+    series sampled at every time step; accept: result of the acceptance tests of the
+    analysis script; steps: time steps; note: remark.
+
+    Two columns are NOT quantities of the article (Supplementary Note S11, Part D): u_peak
+    is the largest speed in the coolant at the last sample of the run, not the peak speed at
+    200 s of Table V; global_resid_pct is an estimate with constant properties and is not
+    the remainder of the energy account of the article.  E_gen_J is the nominal heat rate
+    of the run times the time span of its monitors.  On the two coarser meshes the plume
+    above the cell oscillates late in the discharge (Supplementary Note S6, Part G), so
+    that u_peak of a coarse-mesh run is one sample of an oscillating value.
+
+results/r1_runs/familyC_gci.csv
+    Grid study of the four runs with the final settings: for each quantity the value on
+    the four meshes and, for the coarser and the finer mesh triplet, the ratio of successive
+    differences (R), the class (kind), and the output of the analysis script for an order
+    (p), an extrapolated value (ext) and an index (GCI%), followed by a least-squares fit
+    over the four meshes (lsq_*).  The script fills p, ext and GCI% for every triplet that
+    is not divergent.  The article assigns an observed order to monotone triplets only and
+    uses no extrapolated value, no index and no least-squares fit; its indicator of the
+    numerical uncertainty is three times the range over the four meshes (Section V-D,
+    Supplementary Note S7).  The peak speed on the extra-coarse mesh is one sample of an
+    oscillating value, so that R, kind and p of its coarser triplet depend on the sampling
+    instant (Supplementary Note S7, Part B).
+
+2.2 Pilots, restart pilots and scaling measurements
+
+results/r1_pilots/stage1_pi_groupA.csv
+results/r1_pilots/stage1_vm.csv
+    The 29 pilot runs on the coarse mesh: pilots 1 to 5 (one corrector and the velocity
+    limiter, and four variants of it) and pilots 6 to 29 (no limiter, capped time step), in
+    the order of the pilot table of Supplementary Note S6; Table S11.2 gives the number of
+    each identifier.  Columns: pilot; change: what distinguishes the pilot; ended: End, or
+    crash if the solver stopped; steps; t_end (s); fluid_solves: outer passes per time step;
+    p_solves: pressure solves per time step; co_max_med: median of the largest Courant
+    number; verdict: result of the search for a two-step oscillation; resid_pct: residual of
+    the balance of the coolant as a percentage of the interface heat (see the note of the
+    pilot table of Supplementary Note S6 on its convention); umax_peak, umax_last: largest
+    speed in the bath over the pilot and at its end (m/s); min_dT_local: lowest coolant
+    temperature minus the initial temperature (K); accept: result of the acceptance tests;
+    s_per_step: wall clock per time step (s).
+
+results/r1_pilots/fine_restart_pilots.csv
+    The seven restart pilots on the fine mesh (restart table of Supplementary Note S6),
+    one row each, unrounded.  This table was written for this folder from the project's
+    table of numbers (topic fin).  Columns: number_in_note_S11 (R1 to R7); identifier;
+    change; nOuter, nCorr, nNonOrth: outer passes, pressure correctors, non-orthogonal
+    corrections; dt_cap_ms: time-step cap (ms); D: cell viscous number at the cap;
+    t_restart_s: time of the state the pilot continues from; t_span_s: time covered;
+    steps; amplitude_start_m_s, amplitude_end_m_s: two-step amplitude at the probe in the
+    column below the cell on the first steps and as the median of the last 50 steps (m/s);
+    factor_per_step: factor of the two-step amplitude per time step; verdict: result of
+    the search of the analysis script; fluid_resid_pct: balance of the coolant as a
+    percentage of the interface heat over the pilot; u_max_last_m_s: largest speed at the
+    last step; wall_s, s_per_step: wall clock of the solver and per time step (s).
+
+results/r1_pilots/fine_restart_pilots_summary.txt
+    Output of the analysis script for the seven restart pilots, one block per pilot (the
+    blocks are named c4, c5, dt3, o3c2, no2, dt15 and ref).  Line 8 of this file is a
+    source of the list of numbers.  The lines "ACCEPTANCE" are the acceptance tests of the
+    analysis script.  Every pilot fails the test of the lowest coolant temperature (16 mK
+    below the initial temperature in the pilots; 17 mK in the discharge that they
+    continue); the two pilots in which the two-step oscillation persists also fail the
+    tests of that oscillation, and the pilot with three outer passes the test of the
+    balance of the coolant (1.7 % against a limit of 1 %).  The restart table of
+    Supplementary Note S6 uses the two-step amplitudes and the balance of the coolant.
+
+results/r1_cloud/scaling_cx3d-176x440_2026-10-12.txt
+    Strong-scaling measurement (Supplementary Note S10, Part E), one line per run: mesh,
+    cells, MPI ranks, cells per rank, time steps, wall clock per time step (s), core-seconds
+    per time step, exit status of the solver.
+
+    Run time and metered cost of each of the 67 runs on the cloud machine (Tables S10.1 and
+    S10.2 of Supplementary Note S10) are in numbers_quoted.csv, topic cost.
+
+2.3 Interface audit of the cell
+
+results/r1_addons/interface_audit/interface_split.csv
+    Face-by-face audit of the cell surface (Supplementary Note S8) for five runs at 130 and
+    260 s, by part of the surface.  "can wall" is the side wall, "top cap", "bottom cap" and
+    "both caps" the end caps, "whole patch" the cell surface.  Qf is the coolant-side heat
+    rate, Qs_tensor the cell-side tensor flux with its normal and tangential part,
+    Qs_stock_scalar the cell-side value by the formula of the stock heat-flux object.
+    Heat rates in this file are for the simulated quadrant, one quarter of the cell.
+
+results/r1_addons/interface_audit/interface_decomposition.csv
+    Split of the interface difference into the heat-capacity term and the staggering term,
+    at 130 s, at 260 s and over the whole run, for three runs (Supplementary Note S8,
+    Part D).  Values for the simulated quadrant.
+
+results/r1_addons/interface_audit/energy_audit.csv
+    Energy account over the discharge of the same five runs, D17 among them, one row per
+    run (Supplementary Note S8, Part C).  Energies in J for the simulated quadrant between
+    t_a and t_b: E_gen generated; dE_cell stored in the cell; E_s_rel released by the cell
+    (E_gen - dE_cell); E_int_f received by the coolant through the cell surface;
+    D_interface their difference; dE_bath change of the enthalpy of the coolant; E_wall
+    heat through the outer walls (negative: leaving), with its parts by wall; E_dpdt,
+    E_grav, dKE pressure work, gravity work and change of kinetic energy; M_a coolant mass
+    at the start and dM its change (kg); E_mass enthalpy of the liquid that leaves through
+    the pressure-reference cell; R_fluid_rhoh and R_fluid_open residual of the balance of
+    the coolant without and with that enthalpy; pct_gen_*: shares of E_gen (%);
+    D_pct_of_E_int_f and R_open_pct_of_E_int_f: shares of E_int_f (%).  dE_bath, E_mass,
+    R_fluid_rhoh, global_unaccounted and the shares formed from them are counted from the
+    temperature from which the solver counts enthalpy (298.15 K) and are not quantities of
+    the article; D_interface and R_fluid_open do not depend on that temperature.
+
+results/r1_addons/interface_audit/twins_three_correctors.csv
+    The same account for the coarse- and medium-mesh discharges with three pressure
+    correctors and the directional option (D7 and D11), each beside its twin with five
+    correctors.
+
+2.4 Openings at constant pressure
+
+results/r1_addons/expansion_port/short_tests.csv
+    The short tests of openings at constant pressure (Supplementary Note S3, Part E), one
+    row per test.  The six tests of the table of that note are S1_lid_0_10s, S2_floor_0_10s,
+    L1c_lid_260s, L2c_floor_260s, L3c_lid1face_260s and M2c_floor_medium_260s.  The four
+    rows whose identifier ends in _v0 are first versions of the four tests that start at
+    260 s; they started with the pressure in the bath shifted by a constant against the
+    opening and were repeated, with the same outcome; the note quotes the repeats.
+    Columns: run; steps; t0, t1: window (s); net_min_kg_s: smallest net mass flow through
+    the opening; steps_face_inflow, steps_face_inflow_after: time steps with inflow on a
+    face of the opening, in all and after the first second; back_over_out: backflow mass
+    over outflow mass; port_mass_kg: mass through the opening; mass_books_rel: |change of
+    coolant mass + mass through the opening| over that mass; mass_ratio, volume_ratio:
+    mass and volume through the opening over those of the thermal expansion;
+    energy_residual_pct, energy_residual_without_port_pct: balance of the coolant with and
+    without the enthalpy flow through the opening (% of the interface heat);
+    port_enthalpy_above_T0_J; alternation_flagged, alternation_rho1_only: series flagged
+    by the search for a two-step oscillation; cont_cum_port, cont_cum_reference_cell:
+    cumulative continuity error printed by the solver in the test and in the run with the
+    pressure-reference cell over the same window; twin_*: largest difference from that
+    run (K, W); all_gates_pass, failed: outcome of the tests of the study.  Values for the
+    simulated quadrant.
+
+    The two full discharges with the expansion port (D18 and D19) are rows of
+    results/r1_runs/batch3.csv.
+
+
+3. RESULT TABLES OF THE PLATE STUDY (Supplementary Note S9)
+
+results/r1_addons/plate_verification/tables/runs_summary.csv
+    One row for each of the 42 runs of the plate study that its results use.  run:
+    identifier, a family, an index and a suffix; props: property set (B: viscosity,
+    conductivity and heat capacity constant at the film temperature with the density law of
+    the model coolant; V: the model coolant with all its laws; A: constant properties with
+    one tenth of the density slope and ten times the gravity; G: constant properties with
+    the density slope of the model coolant, ten times the gravity and a wall-to-liquid
+    difference of 2.8 K in place of 28 K; A and G are the first design of the study);
+    level: mesh level of the note less one; cells; first_cell_mm: thickness of the wall
+    cell; edges: "wall" for the plate set flush in an adiabatic wall, "symmetry" for free
+    edges; maxDeltaT: time-step cap (s); dtfac: factor on the cap (0.5: half the time
+    step); D_wall_cell: cell viscous number of the wall cell at the cap; nCorr: pressure
+    correctors; Gr_factor: factor on the Grashof number (families H); Pr_film, Gr_H, Ra_H;
+    Nu_sim, h_sim: similarity solution with constant properties; Nu_sim_vp, h_sim_vp:
+    similarity solution with the properties of the run; t_end, steps, finished; Nu_avg,
+    h_avg: average Nusselt number and heat-transfer coefficient of the plate at t_end;
+    Nu_ratio, Nu_ratio_vp: Nu_avg over Nu_sim and over Nu_sim_vp; Nu_ratio_t15 to
+    Nu_ratio_vp_t60: the same at 15, 20, 30 and 60 s.  The values of the tables of
+    Supplementary Note S9 are Nu_ratio_t30 (constant properties) and Nu_ratio_vp_t30 (model
+    coolant).  The remaining columns are diagnostics of the plate study: heat rate from the
+    written fields against the monitor, ratios by part of the plate (ratio_full, _mid,
+    _lead, _trail), velocity profiles at three heights against the similarity profile
+    (umax_*, eta_peak_*, u_eta*), temperature bounds, and the statistics and acceptance
+    tests of the search for a two-step oscillation (alt_*, probe_*, tail_*, Q_*, accept_*).
+    Families: Bw and Bs, constant properties with the wall and with free edges; Vs and Vw,
+    the model coolant; Hs and Hw, 16, 256 and 4096 times the Grashof number; As, Aw and Gs,
+    the first design.  In this file "ester" means the model coolant.
+
+results/r1_addons/plate_verification/tables/gci_Bw.csv
+results/r1_addons/plate_verification/tables/gci_Bs.csv
+results/r1_addons/plate_verification/tables/gci_Vs.csv
+    Average Nusselt number over the similarity value on the mesh levels (L0 to L5 are
+    levels 1 to 6 of the note) for the walled plate, the plate with free edges and the
+    plate in the model coolant, with the ratio of successive differences, the class, the
+    apparent order, the extrapolated value and an index for each triplet of levels: the
+    source of the two plate tables of Supplementary Note S9.
+
+results/r1_addons/plate_verification/tables/domain_sensitivity.csv
+    Four runs of the domain test (property set A): the base domain, a larger and a smaller
+    domain, and the base domain with the walled edge treatment, in the columns of
+    runs_summary.csv.
+
+results/r1_addons/plate_verification/tables/diag_summary.csv
+    One diagnostic run with tighter solver tolerances, in the same columns.
+
+results/r1_addons/plate_verification/independent_check_runs.csv
+    The 18 runs of the independent check of the plate study (meshes refined in one of the
+    two directions only, other domain sizes, one repeat).  This table was written for
+    this folder from the records of that check.  Columns: run; cells; D_wall_cell; steps;
+    p_rgh_solves_per_step; Co_max_median_last_200; two_step_amplitude_m_s; wall_s; ended;
+    and, for the 12 runs whose written fields the check evaluated: time (s), first_cell_mm,
+    dz_mm (cell length along the plate), Pr, Gr, Ra, Nu_sim, h_sim (similarity solution),
+    Nu_fields, h_fields (from the written fields), Nu_over_sim, win_whole, win_mid,
+    win_lead, win_trail (ratio to the similarity value for the whole plate and for parts of
+    it), Nu_over_sim_t15, _t20, _t30 (the ratio at 15, 20 and 30 s), Umax_domain_mm_s.
+
+
+4. RESULT TABLES OF THE VERIFICATION SUITE (Supplementary Note S5)
+
+benchmarks/interface/results/results.csv
+    One row for each of the 881 runs of the verification suite.
+
+benchmarks/interface/results/results_columns.txt
+    Meaning of the columns of results.csv.  In it "aniso" is the anisotropic region (Y in
+    the article) and "iso" its isotropic neighbor region (X).
+
+benchmarks/interface/verification/recheck_runs.csv
+    Runs of the independent re-check of the suite (Supplementary Note S5, Part J), which
+    are not rows of results.csv.  This table was written for this folder from the records
+    of the evaluation scripts of the re-check, one row per quantity of a record.  Columns:
+    group; case: identifier of the case of the re-check (for a re-run, the id of the run
+    in results.csv); quantity: name given by the evaluation script; value.  Groups:
+    rerun_behind_quoted_numbers and rerun_random_sample, re-runs of archived cases of the
+    suite compared with results.csv ("compare.<quantity>.archive" is the value of
+    results.csv, ".rerun" that of the re-run); emulator_check_slab, slab cases of the
+    suite compared with an emulator written from the source alone; groups that begin with
+    new_, the cases the re-check added (closed periodic boxes, patch tests with another
+    neighbor conductivity, with physical gradients, on sheared meshes and with other solver
+    tolerances, slabs with a stagnant fluid neighbor, restart tests, small cases on the
+    stability of the co-normal term); third_script, the five cases re-run with a third
+    evaluation script.  A record is not always one solver run (a restart test compares
+    three runs), so that the number of records in a group is not a number of runs.  In
+    this file "aniso" and "iso"
+    are the anisotropic region and its neighbor, "nouter" the number of coupling passes per
+    step, "conormalbc" the boundary-condition form of the co-normal term and "fo" its
+    function-object form.
+
+
+5. WHERE THE RESULTS OF EACH GROUP OF RUNS ARE
+
+    26 discharges on the cloud machine (D1 to D26 of Supplementary Note S11):
+        D1 to D6                          results/r1_runs/familyC.csv
+        D7 to D11, D16, D24 to D26        results/r1_runs/summary_2026-10-12.csv
+        D14, D15, D18 to D23              results/r1_runs/batch3.csv
+        D12, D13, D17                     results/r1_runs/remaining_discharges.csv
+        energy account of D2, D3, D4, D16, D17 and of D7, D11
+                                          results/r1_addons/interface_audit/
+    3 discharges with one corrector and the limiter
+                                          results/r1_runs/one_corrector_limiter.csv
+    29 pilots on the coarse mesh          results/r1_pilots/stage1_pi_groupA.csv,
+                                          stage1_vm.csv
+    7 restart pilots on the fine mesh     results/r1_pilots/fine_restart_pilots.csv
+    10 scaling measurements               results/r1_cloud/
+    short tests of openings               results/r1_addons/expansion_port/short_tests.csv
+    plate study: 42 runs used, 4 domain tests, 1 diagnostic run, 18 runs of its
+    independent check                     results/r1_addons/plate_verification/
+    verification suite: 881 runs          benchmarks/interface/results/results.csv
+    re-check of the suite                 benchmarks/interface/verification/recheck_runs.csv
+
+    Other quantities of a run that a note quotes (run time and cost of each cloud run,
+    terms of the energy account, the slow oscillation of the plume in 25 discharges) are
+    rows of numbers_quoted.csv with the identifier of the run in their key.
+
+    Runs from which no result was taken, and which have no row in any table: the repeats
+    of four pilots (9, 14, 18 and 26) on the single-board computer, of which only the run
+    time was recorded; in the plate study two of its three diagnostic runs, which wrote
+    eight consecutive time steps for inspection, four trial runs and three attempts on the
+    finest level that were stopped; the trial runs made while the cases of the suite, of
+    the plate study and of the tests of openings were set up; and one run of the
+    independent check of the tests of openings.
+
+
+6. HOW THE FILES DIFFER FROM THOSE OF THE WORKING REPOSITORY
+
+No number was changed.  The copied tables are copies of the files of the same path in the
+working repository, with the following differences.
+
+Names.  Some file and column names differ from the working repository:
+results/r1_runs/one_corrector_limiter.csv and
+results/r1_addons/expansion_port/short_tests.csv have other names there, and the column
+cont_cum_reference_cell of the latter another name.  In numbers_quoted.csv one identifier
+of the table of numbers is renamed (cost.campaign.metered_hours); the topic of the three
+discharges with one corrector and the limiter is written "lim" and its data sets
+limiter_coarse, limiter_medium and limiter_fine, in keys, definitions and sources (the
+Supplementary Notes name them so); their run directory is written
+runs/one_corrector_limiter/;
+a path that begins with paper/ lies one folder level deeper in the working repository; a
+source outside the repository is given by a description in place of its path, and the host
+name of the cloud machine by the words "the cloud machine".
+
+Labels.  In free-text labels and remarks of the run tables and of the pilot tables, in the
+summary of the restart pilots and in one line of results_columns.txt, working names of the
+project were replaced by the names used in the article (for example "final settings",
+"reference inputs", "scalar option", "three pressure correctors").  Two remarks of the run
+tables were brought in line with Supplementary Notes S2 and S9: the conductivity pair
+(2.2, 13) W/(m K) lies inside the ranges measured by Jiang et al. 2023 and is not a pair
+tabulated there, and the heat rate of 20 W is about the lower of the two curve-based
+estimates.  In numbers_quoted.csv the definitions are set in American spelling with the
+same replacements.
+
+Tables written for this folder.  results/r1_runs/remaining_discharges.csv and
+results/r1_pilots/fine_restart_pilots.csv hold entries of the project's table of numbers;
+benchmarks/interface/verification/recheck_runs.csv and
+results/r1_addons/plate_verification/independent_check_runs.csv hold the records of the
+evaluation scripts of the two independent checks in the form of a table.  Their numbers are
+those of these sources, unrounded.

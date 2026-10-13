@@ -1,0 +1,30 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system/battery"; object fvSolution; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    // The anisotropic conductivity enters as a symm-tensor diffusivity, but the
+    // resulting matrix is still symmetric (the anisotropy correction is
+    // explicit), so this is a PCG/DIC problem, not PBiCGStab/DILU.
+    h
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-08;
+        relTol          0.1;
+    }
+
+    hFinal
+    {
+        $h;
+        relTol          0;
+    }
+}
+
+PIMPLE
+{
+    nNonOrthogonalCorrectors 1;
+}
+
+// ************************************************************************* //

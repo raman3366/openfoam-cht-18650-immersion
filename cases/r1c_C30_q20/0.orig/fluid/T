@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class volScalarField; location "0/fluid"; object T; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 308.15;         // bath starts at room temperature, 35 degC
+
+boundaryField
+{
+    "symmetry.*"
+    {
+        type            symmetryPlane;
+    }
+
+    // Sealed container losing heat to still room air.  h = 5 W/m2/K is natural
+    // convection off a small enclosure; the container wall itself adds
+    // ~0.016 m2K/W against ~0.2 m2K/W for that air film, i.e. under 10 %, so it
+    // is lumped into h rather than meshed as a solid region.
+    "bath(WallX|WallY|Floor|Lid)"
+    {
+        type            externalWallHeatFluxTemperature;
+        mode            coefficient;
+        h               uniform 5;
+        Ta              uniform 308.15;
+        kappaMethod     fluidThermo;
+        value           uniform 308.15;
+    }
+
+    fluid_to_battery
+    {
+        type            compressible::turbulentTemperatureRadCoupledMixed;
+        Tnbr            T;
+        kappaMethod     fluidThermo;
+        value           uniform 308.15;
+    }
+}
+
+// ************************************************************************* //

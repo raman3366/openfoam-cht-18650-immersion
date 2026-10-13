@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class volScalarField; location "0/fluid"; object p_rgh; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+internalField   uniform 1e5;
+
+// NOTE ON ORDERING: among regex entries OpenFOAM lets the LAST match win, so
+// the ".*" catch-all must come FIRST and the specific patterns after it.
+
+boundaryField
+{
+    ".*"
+    {
+        type            fixedFluxPressure;
+        value           uniform 1e5;
+    }
+
+
+    "symmetry.*"
+    {
+        type            symmetryPlane;
+    }
+
+    // Expansion port (add_port.py).  The STATIC pressure p is fixed; the boundary value of
+    // p_rgh follows as p - rho_port*(g.Cf - ghRef) (prghPressureFvPatchScalarField.cxx:146),
+    // here p + rho_port*9.81*0 (g times the height of the port plane; hRef = 0).  'value' is
+    // that expression at the initial density, so the field is consistent before the first
+    // updateCoeffs().
+    expansionPort
+    {
+        type            prghPressure;
+        p               uniform 101223.497314;      // STATIC pressure on the port
+        value           uniform 101223.497314;
+    }
+}
+
+// ************************************************************************* //

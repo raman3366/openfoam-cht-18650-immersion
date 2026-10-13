@@ -1,0 +1,9 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "constant/fluid"; object turbulenceProperties; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Rayleigh number on the cell height, Ra_H = g.beta.dT.H^3/(nu.alpha) ~ 2e7,
+// two orders below the 1e9 transition for a heated vertical surface.
+simulationType  laminar;
+
+// ************************************************************************* //

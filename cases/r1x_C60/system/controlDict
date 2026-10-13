@@ -1,0 +1,613 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system"; object controlDict; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// Control dictionary of this run (comments edited for publication, entries
+// unchanged).  Besides the nine monitors sampled every 0.5 s, 'functions'
+// holds per-time-step instruments and two field-capture windows; they do not
+// alter the solution.  The adjustableRunTime controls of the 0.5 s monitors
+// take part in the time-step sequence
+// (Time.C:103-144, timeControlFunctionObject.C:560-643).
+
+application     chtMultiRegionFoam;
+
+// Restartable by default: raise endTime and rerun to extend the discharge,
+// no need to redo the start-up transient.
+startFrom       latestTime;
+startTime       0;
+
+// 2.6 Ah / 35 A = 267.4 s -- one full discharge at the cell's peak rate.
+stopAt          endTime;
+endTime         267.4;
+
+deltaT          1e-4;               // start small; adjustTimeStep takes over
+
+writeControl    adjustableRunTime;
+writeInterval   10;                 // 27 field snapshots -- enough for ParaView
+purgeWrite      0;
+writeFormat     binary;
+writePrecision  15;
+writeCompression off;
+timeFormat      general;
+timePrecision   10;
+runTimeModifiable yes;
+
+adjustTimeStep  yes;
+// Courant limit and largest time step of this run.
+maxCo           1;
+maxDi           50;                 // solid conduction is implicit; not limiting
+maxDeltaT       0.06;
+
+// ---------------------------------------------------------------------------
+// Monitors.  Cheap scalars every 0.5 s so the whole results table can be
+// rebuilt later without re-running the solver; full fields only every 10 s.
+// Note: nothing here may write a volume field on a short interval, or it
+// spawns a time directory every time it fires.
+// ---------------------------------------------------------------------------
+functions
+{
+    // >>> 0.5 s monitors >>>
+    // nine monitors sampled every 0.5 s
+    cellTemperatureMax
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          battery;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       max;        // the jellyroll hot spot -- the headline number
+        fields          (T);
+    }
+
+    cellTemperatureMean
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          battery;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volAverage;
+        fields          (T);
+    }
+
+    bathTemperatureMean
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volAverage;  // bulk bath rise -- the thermal-mass check
+        fields          (T);
+    }
+
+    bathTemperatureMax
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       max;
+        fields          (T);
+    }
+
+    // volFieldValue can only read registered fields and its operation enum has
+    // no maxMag, so peak speed takes two stages: 'mag' registers mag(U) as a
+    // real field, then plumeSpeed takes max over it.  Order matters -- magU
+    // must run first, and function objects execute in dictionary order.
+    magU
+    {
+        type            mag;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        field           U;
+        executeControl  adjustableRunTime;
+        executeInterval 0.5;
+        writeControl    none;
+        log             false;
+    }
+
+    plumeSpeed
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       max;
+        fields          (mag(U));
+    }
+
+    // Can-surface mean temperature.  With the (known) 18.2 W input this gives
+    // the instantaneous immersion heat transfer coefficient directly.
+    canSurfaceTemperature
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        writeFields     false;
+        log             false;
+        regionType      patch;
+        name            fluid_to_battery;
+        operation       areaAverage;
+        fields          (T);
+    }
+
+    batteryProbes
+    {
+        type            probes;
+        libs            (sampling);
+        region          battery;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        fields          (T);
+        probeLocations
+        (
+            (0.0005  0.0005 0.0650)     // core, mid-height -- the hot spot
+            (0.0005  0.0005 0.0350)     // core, near base
+            (0.0005  0.0005 0.0950)     // core, near top
+            (0.00885 0.0002 0.0650)     // just inside the can, mid-height
+            (0.00885 0.0002 0.0950)     // just inside the can, near top
+        );
+    }
+
+    fluidProbes
+    {
+        type            probes;
+        libs            (sampling);
+        region          fluid;
+        writeControl    adjustableRunTime;
+        writeInterval   0.5;
+        fields          (T U);
+        probeLocations
+        (
+            (0.00915 0.0002 0.0650)     // in the film on the can, mid-height
+            (0.0020  0.0020 0.1050)     // plume core above the cell
+            (0.0020  0.0020 0.0250)     // below the cell -- the return inflow
+            (0.0280  0.0280 0.0050)     // far corner, bottom -- coldest bath
+            (0.0280  0.0280 0.1250)     // far corner, top
+        );
+    }
+    // <<< 0.5 s monitors <<<
+
+    // rows are written every time step in execute()
+    // Heat rate through every fluid boundary: in at the can, out at the four
+    // external bath walls.  Tied to writeTime (this object writes a volume
+    // field, so a short interval would spawn time directories); the rates vary
+    // smoothly, so 27 samples is plenty, and the field is useful in ParaView.
+    wallHeatFlux
+    {
+        type            wallHeatFlux;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    writeTime;
+        log             true;
+    }
+
+    // ---- per-step harness: 'errors warn' so an instrument fault cannot stop a run ----
+    stepMagU
+    {
+        type            mag;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        field           U;
+        result          stepMagU;
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    none;
+        log             false;
+        errors          warn;
+    }
+
+    stepMagSqrU
+    {
+        type            magSqr;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        field           U;
+        result          stepMagSqrU;
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    none;
+        log             false;
+        errors          warn;
+    }
+
+    // per-step twins of the 0.5 s monitors
+    step_cellTemperatureMax
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          battery;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       max;        // the jellyroll hot spot -- the headline number
+        fields          (T);
+        errors          warn;
+    }
+
+    step_cellTemperatureMean
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          battery;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volAverage;
+        fields          (T);
+        errors          warn;
+    }
+
+    step_bathTemperatureMean
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volAverage;  // bulk bath rise -- the thermal-mass check
+        fields          (T);
+        errors          warn;
+    }
+
+    step_bathTemperatureMax
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       max;
+        fields          (T);
+        errors          warn;
+    }
+
+    step_plumeSpeed
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       max;
+        fields          (stepMagU);
+        errors          warn;
+    }
+
+    step_canSurfaceTemperature
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      patch;
+        name            fluid_to_battery;
+        operation       areaAverage;
+        fields          (T);
+        errors          warn;
+    }
+
+    step_batteryProbes
+    {
+        type            probes;
+        libs            (sampling);
+        region          battery;
+        writeControl    timeStep;
+        writeInterval   1;
+        fields          (T);
+        probeLocations
+        (
+            (0.0005  0.0005 0.0650)     // core, mid-height -- the hot spot
+            (0.0005  0.0005 0.0350)     // core, near base
+            (0.0005  0.0005 0.0950)     // core, near top
+            (0.00885 0.0002 0.0650)     // just inside the can, mid-height
+            (0.00885 0.0002 0.0950)     // just inside the can, near top
+        );
+        errors          warn;
+    }
+
+    step_fluidProbes
+    {
+        type            probes;
+        libs            (sampling);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        fields          (T U p_rgh);
+        probeLocations
+        (
+            (0.00915 0.0002 0.0650)     // in the film on the can, mid-height
+            (0.0020  0.0020 0.1050)     // plume core above the cell
+            (0.0020  0.0020 0.0250)     // below the cell -- the return inflow
+            (0.0280  0.0280 0.0050)     // far corner, bottom -- coldest bath
+            (0.0280  0.0280 0.1250)     // far corner, top
+        );
+        errors          warn;
+    }
+
+    // fluid energy budget: d/dt int(rho h) = Q_interface + Q_walls + int(dpdt)
+    //                      - d/dt int(rho K) + g . int(rho U)   (EEqn.H:6-24)
+    step_fluidTmin
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       min;
+        fields          (T);
+        errors          warn;
+    }
+
+    step_fluidMass
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volIntegrate;
+        fields          (rho);
+        errors          warn;
+    }
+
+    step_fluidRhoH
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       weightedVolIntegrate;
+        weightField     rho;
+        fields          (h);
+        errors          warn;
+    }
+
+    step_fluidH
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volIntegrate;
+        fields          (h);
+        errors          warn;
+    }
+
+    step_fluidDpdt
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volIntegrate;
+        fields          (dpdt);
+        errors          warn;
+    }
+
+    step_fluidRhoMagSqrU
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       weightedVolIntegrate;
+        weightField     rho;
+        fields          (stepMagSqrU);
+        errors          warn;
+    }
+
+    step_fluidRhoU
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       weightedVolIntegrate;
+        weightField     rho;
+        fields          (U);
+        errors          warn;
+    }
+
+    // solid side: rho = 2700 const, so 2700*int(h) is the stored enthalpy
+    step_cellH
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        region          battery;
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             false;
+        regionType      all;
+        operation       volIntegrate;
+        fields          (h);
+        errors          warn;
+    }
+
+    step_fluidProbesExtra
+    {
+        type            probes;
+        libs            (sampling);
+        region          fluid;
+        writeControl    timeStep;
+        writeInterval   1;
+        fields          (T U p_rgh);
+        probeLocations
+        (
+            (0.029317 0.028713 0.003177)    // 0 pressure reference cell (pRefPoint)
+            (0.00470  0.00440  0.0008)      // 1 r 6.4 mm, first layer above the floor
+            (0.00470  0.00440  0.0317)      // 2 r 6.4 mm, first layer below the cell base
+            (0.00470  0.00440  0.0983)      // 3 r 6.4 mm, first layer above the cell top
+            (0.00470  0.00440  0.1292)      // 4 r 6.4 mm, first layer below the lid
+            (0.00915  0.0002   0.0350)      // 5 film on the can, near the base
+            (0.00915  0.0002   0.0950)      // 6 film on the can, near the top
+            // Probe 0 of fluidProbes (0.00915 0.0002 0.0650) lies ON the cell-face plane
+            // z = 65 mm of the coarse mesh (46 cells over the cell height), so which
+            // of two cells it samples is decided by round-off.  7 and 8 are 0.13 mm
+            // from the centres of those two cells, 0.14 mm from their nearest face.
+            (0.00915  0.0002   0.0643)      // 7 film, mid-height, cell below the plane
+            (0.00915  0.0002   0.0657)      // 8 film, mid-height, cell above the plane
+        );
+        errors          warn;
+    }
+
+    // extrema with their locations (fluid); thermo:mu shows the viscosity in force
+    step_fieldMinMax
+    {
+        type            fieldMinMax;
+        libs            (fieldFunctionObjects);
+        region          fluid;
+        mode            magnitude;
+        location        true;
+        fields          (T U p_rgh dpdt thermo:mu);
+        writeControl    timeStep;
+        writeInterval   1;
+        log             false;
+        errors          warn;
+    }
+
+    // solver residuals of the FIRST solve of each field in the step
+    // (solverInfoTemplates.C: sp.first()); last-corrector values come from the log
+    step_solverInfoFluid
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        region          fluid;
+        fields          (U h p_rgh);
+        log             false;
+        errors          warn;
+    }
+
+    step_solverInfoBattery
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        region          battery;
+        fields          (h);
+        log             false;
+        errors          warn;
+    }
+
+    // wall-clock per time step
+    step_timeInfo
+    {
+        type            timeInfo;
+        libs            (utilityFunctionObjects);
+        perTimeStep     true;
+        writeControl    timeStep;
+        writeInterval   1;
+        errors          warn;
+    }
+
+    // one-off listing of the registered objects of the fluid region (step 1 only)
+    registryFluid
+    {
+        type            writeObjects;
+        libs            (utilityFunctionObjects);
+        region          fluid;
+        objects         (".*");
+        writeOption     log;
+        writeControl    timeStep;
+        writeInterval   1;
+        timeEnd         1.5e-4;
+        errors          warn;
+    }
+
+    // ---- field capture at consecutive time steps (fluid region) ----
+    captureEarly
+    {
+        type            writeObjects;
+        libs            (utilityFunctionObjects);
+        region          fluid;
+        objects         (U phi p_rgh p T dpdt rho h);
+        writeOption     anyWrite;
+        writeControl    timeStep;
+        writeInterval   1;
+        timeStart       0.062;
+        timeEnd         0.18;
+        errors          warn;
+    }
+
+    captureLate
+    {
+        type            writeObjects;
+        libs            (utilityFunctionObjects);
+        region          fluid;
+        objects         (U phi p_rgh p T dpdt rho h);
+        writeOption     anyWrite;
+        writeControl    timeStep;
+        writeInterval   1;
+        timeStart       267.04;
+        timeEnd         277.4;
+        errors          warn;
+    }
+}
+
+// print-only: logs which relaxation factor and solver dictionary each solve
+// uses (solution.C:322-483 DebugInfo), i.e. whether U/h or UFinal/hFinal applied
+DebugSwitches { solution 1; }
+
+
+// ************************************************************************* //

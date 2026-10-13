@@ -1,0 +1,10 @@
+#!/bin/sh
+cd "${0%/*}" || exit                            # run from this directory
+. "${WM_PROJECT_DIR:?run me inside 'openfoam2606'}/bin/tools/RunFunctions"
+
+# The number of MPI ranks is numberOfSubdomains in system/decomposeParDict.
+./Allrun.pre || exit 1
+runApplication decomposePar -allRegions -force
+runParallel $(getApplication)
+runApplication reconstructPar -allRegions -newTimes
+echo "done: the monitors are in postProcessing/ (python3 ../../tools/analyze.py --case . --no-plots)"

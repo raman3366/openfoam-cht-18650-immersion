@@ -1,0 +1,45 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "system/fluid"; object fvSchemes; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    default         Euler;          // bounded, robust; the plume start-up is
+}                                   // the only fast transient and it is short
+
+gradSchemes
+{
+    default         Gauss linear;
+}
+
+divSchemes
+{
+    default         none;
+    div(phi,U)      Gauss limitedLinearV 1;
+    div(phi,K)      Gauss limitedLinear 1;
+    div(phi,h)      Gauss limitedLinear 1;
+    div(phi,e)      Gauss limitedLinear 1;
+    div(phi,Ekp)    Gauss limitedLinear 1;
+    div(phi,k)      Gauss limitedLinear 1;
+    div(phi,epsilon) Gauss limitedLinear 1;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+}
+
+laplacianSchemes
+{
+    // The O-grid fans out towards the box corners, so cap the explicit
+    // non-orthogonal correction rather than using unlimited 'corrected'.
+    default         Gauss linear limited corrected 0.5;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         limited corrected 0.5;
+}
+
+// ************************************************************************* //

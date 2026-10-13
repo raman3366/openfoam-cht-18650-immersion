@@ -1,0 +1,17 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; location "constant/fluid"; object fvOptions; }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Velocity limiter: a numerical device, not physics.  It is switched off in
+// this run (active no); the entry is kept because the dictionary is that of
+// the run.  The article shows what the limiter hides when the time step is
+// advanced with one pressure corrector.
+limitU
+{
+    type            limitVelocity;
+    active          no;
+    selectionMode   all;
+    max             0.25;
+}
+
+// ************************************************************************* //
